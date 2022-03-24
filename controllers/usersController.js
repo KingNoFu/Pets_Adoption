@@ -9,7 +9,7 @@ const user={
     id: req.body.id,
     time : new Date().getTime()
 }
-const token =jwt.sign({user}, db.secret_key,{expiresIn:"1m"});
+const token =jwt.sign({user}, db.secret_key,{expiresIn:"3m"});
 res.status(200);
 format.success =true;
 format.code =200;
