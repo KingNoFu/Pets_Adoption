@@ -3,7 +3,7 @@ const router = express.Router();
 const petsController = require('../controllers/petsController');
 const petValidator = require("../validations/petValidation")
 const jwtToken = require("../validations/jwValidation");
-router.get('/pet', jwtToken.validateToken,petValidator.id, petsController.getPets);
+router.get('/pet', jwtToken.validateToken,petValidator.id, petsController.getPet);
 router.get('/pets', jwtToken.validateToken,petsController.getPets);
 router.post('/pet', jwtToken.validateToken,petValidator.add, petsController.postPet);
 router.post('/login', petValidator.id, petsController.getLogin);
