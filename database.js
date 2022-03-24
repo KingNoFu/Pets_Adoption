@@ -11,4 +11,5 @@ exports.config = config;
 /*user = root
   passwor = ""
   port= "3306"
-  host= localhost */
+  host= localhost 
+  mysql://bcee6fe3dfa399:3bb62112@us-cdbr-east-05.cleardb.net/heroku_e348eec0e7f6507?reconnect=true*/
