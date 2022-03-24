@@ -9,7 +9,7 @@ controller.getLogin = (req,res) =>{
         id: req.body.id,
         time : new Date().getTime()
     }
-    const token =jwt.sign({user}, db.secret_key,{expiresIn:"1m"});
+    const token =jwt.sign({user}, db.secret_key,{expiresIn:"3m"});
     res.status(200);
     format.success =true;
     format.code =200;
@@ -17,10 +17,10 @@ controller.getLogin = (req,res) =>{
     format.data=token;
     res.json(format);
     };
-    
-controller.getPet = (req, res) =>
+
+controller.getAdoption = (req, res) =>
 {
-    const sql = "SELECT * FROM pets WHERE id = ?";
+    const sql = "SELECT * FROM adoptions INNER JOIN pets ON pets.id = adoptions.pet_id INNER JOIN users ON users.id = adoptions.user_id  WHERE adoptions.id = ?";
 	req.getConnection((error,conn) => {
         if(error)
         {
@@ -57,9 +57,48 @@ controller.getPet = (req, res) =>
 	});
 };
 
-controller.getPets = (req, res) =>
+controller.getAdoptionByUser = (req, res) =>
 {
-    const sql = "SELECT * FROM pets";
+    const sql = "SELECT * FROM adoptions INNER JOIN pets ON pets.id = adoptions.pet_id INNER JOIN users ON users.id = adoptions.user_id WHERE adoptions.user_id = ?";
+	req.getConnection((error,conn) => {
+        if(error)
+        {
+            format.code = 500;
+            format.message = "Error to connect to DB, please contact to admin";
+            format.success = false;
+            res.status(500);
+            res.json(format);
+        }
+        else
+        {
+            conn.query(sql, [req.query.user_id] ,(err, results) =>{
+                if(err)
+                {
+                    format.code = 400;
+                    format.message = err.sqlMessage;
+                    format.success = false;
+                    res.status(400);
+                    res.json(format);
+                }
+                else
+                {
+                    format.code = 200;
+                    format.message = "Success";
+                    format.success = true;
+                    format.data = results;
+                    res.status(200);
+                    res.json(format);
+                }
+                
+            })
+        }
+		
+	});
+};
+
+controller.getAdoptions = (req, res) =>
+{
+    const sql = "SELECT * FROM adoptions INNER JOIN pets ON pets.id = adoptions.pet_id INNER JOIN users ON users.id = adoptions.user_id";
 	req.getConnection((error,conn) => {
         if(error)
         {
@@ -95,9 +134,9 @@ controller.getPets = (req, res) =>
     })
 }
 
-controller.postPet = (req, res) =>
+controller.postAdoption = (req, res) =>
 {
-    const sql = "INSERT INTO pets SET ?";
+    const sql = "INSERT INTO adoptions SET ?";
     req.getConnection((error,conn) => {
         if(error)
         {
@@ -121,7 +160,7 @@ controller.postPet = (req, res) =>
                 else
                 {
                     format.code = 201;
-                    format.message = "Pet add";
+                    format.message = "Adption add";
                     format.success = true;
                     format.data = results.insertId;
                     res.status(201);
@@ -133,9 +172,9 @@ controller.postPet = (req, res) =>
     })
 }
 
-controller.putPet = (req, res) =>
+controller.putAdoption = (req, res) =>
 {
-    const sql = "UPDATE pets SET ? WHERE id = ?";
+    const sql = "UPDATE adoptions SET ? WHERE id = ?";
 	req.getConnection((error,conn) => {
         if(error)
         {
@@ -161,7 +200,7 @@ controller.putPet = (req, res) =>
                     if(results.affectedRows > 0)
                     {
                         format.code = 200;
-                        format.message = "Pet updated";
+                        format.message = "Adoption updated";
                         format.success = true;
                         format.data = results;
                         res.status(200);
@@ -170,7 +209,7 @@ controller.putPet = (req, res) =>
                     else
                     {
                         format.code = 404;
-                        format.message = "Pet can't updated, please confirm data";
+                        format.message = "Adoption can't be updated, please confirm data";
                         format.success = false;
                         format.data = results;
                         res.status(404);
@@ -183,9 +222,9 @@ controller.putPet = (req, res) =>
     })
 }
 
-controller.deletePet = (req, res) =>
+controller.deleteAdoption = (req, res) =>
 {
-    const sql = "DELETE from pets WHERE id = ?";
+    const sql = "DELETE from adoptions WHERE id = ?";
     req.getConnection((error,conn) => {
         if(error)
         {
@@ -211,7 +250,7 @@ controller.deletePet = (req, res) =>
                     if(results.affectedRows > 0)
                     {
                         format.code = 204;
-                        format.message = "Pet deleted";
+                        format.message = "Adoption deleted";
                         format.success = true;
                         format.data = results;
                         res.status(204);
@@ -220,7 +259,7 @@ controller.deletePet = (req, res) =>
                     else
                     {
                         format.code = 404;
-                        format.message = "Pet can't be deleted, please confirm data";
+                        format.message = "Adoption can't be deleted, please confirm data";
                         format.success = false;
                         format.data = results;
                         res.status(404);
