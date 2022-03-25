@@ -97,7 +97,7 @@ const db =require ("../database").config;
 
 controller.postPet = (req, res) =>
 {
-    const sql = "INSERT INTO adoptions SET ?";
+    const sql = "INSERT INTO pets SET ?";
     req.getConnection((error,conn) => {
         if(error)
         {
@@ -135,7 +135,7 @@ controller.postPet = (req, res) =>
 
 controller.putPet = (req, res) =>
 {
-    const sql = "UPDATE adoptions SET ? WHERE id = ?";
+    const sql = "UPDATE pets SET ? WHERE id = ?";
 	req.getConnection((error,conn) => {
         if(error)
         {
@@ -185,7 +185,7 @@ controller.putPet = (req, res) =>
 
 controller.deletePet = (req, res) =>
 {
-    const sql = "DELETE from adoptions WHERE id = ?";
+    const sql = "DELETE from pets WHERE id = ?";
     req.getConnection((error,conn) => {
         if(error)
         {
